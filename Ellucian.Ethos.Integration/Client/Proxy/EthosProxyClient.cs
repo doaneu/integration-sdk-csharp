@@ -137,7 +137,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
         public async Task<EthosResponse> PostAsync( string resourceName, string requestBody )
         {
-            return await PostAsync( resourceName, DEFAULT_VERSION, requestBody );
+            return await PostAsync( resourceName, DEFAULT_VERSION, DEFAULT_VERSION, requestBody );
         }
 
         /// <summary>
@@ -145,12 +145,13 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// in JSON format.
         /// </summary>
         /// <param name="resourceName">The name of the resource to add an instance of.</param>
-        /// <param name="version">The full version header value of the resource used for this POST request.</param>
+        /// <param name="contentType">The Content-Type header value of the resource used for this POST request.</param>
+        /// <param name="accept">The Accept header value of the resource used for this POST request.</param>
         /// <param name="requestBody">The body of the request to POST for the given resource.</param>
         /// <returns>An EthosResponse containing the instance of the resource that was added by this POST operation.</returns>
         /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
         /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null or empty or white space.</exception>
-        public async Task<EthosResponse> PostAsync( string resourceName, string version, string requestBody )
+        public async Task<EthosResponse> PostAsync( string resourceName, string contentType, string accept, string requestBody )
         {
             if ( string.IsNullOrWhiteSpace( resourceName ) )
             {
@@ -162,7 +163,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                     $"Error: Cannot submit a POST request for resourceName { resourceName } due to a null or blank requestBody parameter."
                 );
             }
-            var headers = BuildHeadersMap( version );
+            var headers = BuildHeadersMap( contentType, accept );
             string url = EthosIntegrationUrls.Api( Region, resourceName, null );
             return await base.PostAsync( headers, url, requestBody );
         }
@@ -177,7 +178,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <exception cref="ArgumentNullException">When <paramref name="requestBodyNode"/> is passed as null.</exception>
         public async Task<EthosResponse> PostAsync( string resourceName, JObject requestBodyNode )
         {
-            return await PostAsync( resourceName, DEFAULT_VERSION, requestBodyNode );
+            return await PostAsync( resourceName, DEFAULT_VERSION, DEFAULT_VERSION,  requestBodyNode );
         }
 
         /// <summary>
@@ -185,16 +186,17 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// This is a convenience method equivalent to <pre>Post(resourceName, requestBodyNode.toString())</pre>.
         /// </summary>
         /// <param name="resourceName">The name of the resource to add an instance of.</param>
-        /// <param name="version">The full version header value of the resource used for this POST request.</param>
+        /// <param name="contentType">The Content-Type header value of the resource used for this POST request.</param>
+        /// <param name="accept">The Accept header value of the resource used for this POST request.</param>
         /// <param name="requestBodyNode">The body of the request to POST for the given resource as a JsonNode.</param> 
         /// <returns>An EthosResponse containing the instance of the resource that was added by this POST operation.</returns>
         /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
         /// <exception cref="ArgumentNullException">When <paramref name="requestBodyNode"/> is passed as null.</exception>
-        public async Task<EthosResponse> PostAsync( string resourceName, string version, JObject requestBodyNode )
+        public async Task<EthosResponse> PostAsync( string resourceName, string contentType, string accept, JObject requestBodyNode )
         {
             ArgumentNullException.ThrowIfNull( requestBodyNode, $"Error: Cannot submit a POST request for resource {resourceName} due to a null or blank {nameof( requestBodyNode )} parameter." );           
 
-            return await PostAsync( resourceName, version, requestBodyNode.ToString() );
+            return await PostAsync( resourceName, contentType, accept, requestBodyNode.ToString() );
         }
 
         
@@ -215,7 +217,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null or empty or white space.</exception>
         public async Task<EthosResponse> PutAsync( string resourceName, string resourceId, string requestBody )
         {
-            return await PutAsync( resourceName, resourceId, DEFAULT_VERSION, requestBody );
+            return await PutAsync( resourceName, resourceId, DEFAULT_VERSION, DEFAULT_VERSION, requestBody );
         }
 
         /// <summary>
@@ -224,13 +226,14 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// </summary>
         /// <param name="resourceName">The name of the resource to add an instance of.</param>
         /// <param name="resourceId">The unique ID for the given resource, as required when making a PUT/update request.</param>
-        /// <param name="version">The full version header value of the resource used for this PUT/update request.</param>
+        /// <param name="contentType">The Content-Type header value of the resource used for this PUT/update request.</param>
+        /// <param name="accept">The Accept header value of the resource used for this PUT/update request.</param>
         /// <param name="requestBody">The body of the request to PUT/update for the given resource.</param>
         /// <returns>An EthosResponse containing the instance of the resource that was added by this PUT operation.</returns>
         /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
         /// <exception cref="ArgumentNullException">When <paramref name="resourceId"/> is passed as null or empty or white space.</exception>
         /// <exception cref="ArgumentNullException">When <paramref name="requestBody"/> is passed as null or empty or white space.</exception>
-        public async Task<EthosResponse> PutAsync( string resourceName, string resourceId, string version, string requestBody )
+        public async Task<EthosResponse> PutAsync( string resourceName, string resourceId, string contentType, string accept, string requestBody )
         {
             if ( string.IsNullOrWhiteSpace( resourceName ) )
             {
@@ -244,7 +247,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                 );
             }
 
-            var headers = BuildHeadersMap( version );
+            var headers = BuildHeadersMap( contentType, accept );
             string url = EthosIntegrationUrls.Api( Region, resourceName, resourceId );
             return await base.PutAsync( headers, url, requestBody );
         }
@@ -262,7 +265,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <exception cref="ArgumentNullException">When <paramref name="requestBodyNode"/> is passed as null.</exception>
         public async Task<EthosResponse> PutAsync( string resourceName, string resourceId, JObject requestBodyNode )
         {
-            return await PutAsync( resourceName, resourceId, DEFAULT_VERSION, requestBodyNode.ToString() );
+            return await PutAsync( resourceName, resourceId, DEFAULT_VERSION, DEFAULT_VERSION, requestBodyNode.ToString() );
         }
 
         /// <summary>
@@ -271,13 +274,14 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// </summary>
         /// <param name="resourceName">The name of the resource to add an instance of.</param>
         /// <param name="resourceId">The unique id (GUID) for the given resource, as required when making a PUT/update request.</param>
-        /// <param name="version">The full version header value of the resource used for this PUT/update request.</param>
+        /// <param name="contentType">The content-type header value of the resource used for this PUT/update request.</param>
+        /// <param name="accept">The accept header value of the resource used for this PUT/update request.</param>
         /// <param name="requestBodyNode">The body of the request to PUT/update for the given resource as a JsonNode.</param>
         /// <returns>An EthosResponse containing the instance of the resource that was added by this PUT operation.</returns>
         /// <exception cref="ArgumentNullException">When <paramref name="resourceName"/> is passed as null or empty or white space.</exception>
         /// <exception cref="ArgumentNullException">When <paramref name="resourceId"/> is passed as null or empty or white space.</exception>
         /// <exception cref="ArgumentNullException">When <paramref name="requestBodyNode"/> is passed as null.</exception>
-        public async Task<EthosResponse> PutAsync( string resourceName, string resourceId, string version, JObject requestBodyNode )
+        public async Task<EthosResponse> PutAsync( string resourceName, string resourceId, string contentType, string accept, JObject requestBodyNode )
         {
             if ( requestBodyNode == null )
             {
@@ -285,7 +289,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
                     $"Error: Cannot submit a PUT request for resourceName { resourceName } due to a null or blank requestBody parameter."
                 );
             }
-            return await PutAsync( resourceName, resourceId, version, requestBodyNode );
+            return await PutAsync( resourceName, resourceId, contentType, accept, requestBodyNode );
         }
 
         #endregion
@@ -565,7 +569,7 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// <param name="version">The desired resource version to use, as provided in the HTTP Accept Header of the request.</param>
         /// <returns>An <see cref="EthosResponse" /> containing an initial page (EthosResponse content) of resource data according
         /// to the requested version of the resource.</returns>
-        public async Task<EthosResponse> GetAsync( string resourceName, string version = "" )
+        public async Task<EthosResponse> GetAsync( string resourceName, string version = "")
         {
             if ( string.IsNullOrWhiteSpace( resourceName ) ) { throw new ArgumentNullException( nameof( resourceName ) ); }
 
@@ -1396,14 +1400,21 @@ namespace Ellucian.Ethos.Integration.Client.Proxy
         /// </summary>
         /// <param name="version">The version to use for the Accept and Content-Type headers, as supplied in the returned map.</param>
         /// <returns>a <see cref="Dictionary{TKey, TValue}"/> of header values including Accept and Content-Type (both set to the given version.</returns>
-        internal Dictionary<string, string> BuildHeadersMap( string version )
+        internal Dictionary<string, string> BuildHeadersMap( string contentType, string accept = "" )
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            if ( string.IsNullOrWhiteSpace( version ) )
+            if ( string.IsNullOrWhiteSpace( contentType ) )
             {
-                version = DEFAULT_VERSION;
+                contentType = DEFAULT_VERSION;
             }
-            headers.Add( "Accept", version );
+
+            if(string.IsNullOrWhiteSpace( accept ) )
+            {
+                accept = contentType;
+            }
+
+            headers.Add( "Content-Type", contentType );
+            headers.Add( "Accept", accept );
             //headers.Add( "Content-Type", version );
             return headers;
         }

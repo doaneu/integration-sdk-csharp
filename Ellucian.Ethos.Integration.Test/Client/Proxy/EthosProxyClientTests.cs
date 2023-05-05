@@ -1742,7 +1742,7 @@ namespace Ellucian.Ethos.Integration.Test
         public void PostAsync_With_Null_JObject_Exceptions()
         {
             proxyClient = new EthosProxyClient( SampleTestDataRepository.API_KEY, SampleTestDataRepository.GetMockSequenceForEthosProxyClientWithOKForPaging().httpClient );
-            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await proxyClient.PostAsync( "resourceName", "", requestBodyNode: null ) );
+            _ = Assert.ThrowsAsync<ArgumentNullException>( async () => await proxyClient.PostAsync( "resourceName", "", "", requestBodyNode: null ) );
         }
 
         [Fact]
